@@ -18,57 +18,61 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: ListView(
+          shrinkWrap: true,
           children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-          child: Text(
-            'Messages',
-            style: TextStyle(
-                color: Color(0xff113953),
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                    offset: Offset(0, 3),
-                  ),
-                ]),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: TextFormField(
-                        decoration: const InputDecoration(
-                      hintText: 'Search',
-                      border: InputBorder.none,
-                    )),
-                  ),
-                ),
-                const Icon(
-                  Icons.search,
-                  color: Color(0xff113953),
-                )
-              ],
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+              child: Text(
+                'Messages',
+                style: TextStyle(
+                    color: Color(0xff113953),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-        ),
-        ActiveChats(),
-        RecentChats(),
-      ].toList()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                        offset: Offset(0, 3),
+                      ),
+                    ]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: TextFormField(
+                            decoration: const InputDecoration(
+                          hintText: 'Search',
+                          border: InputBorder.none,
+                        )),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.search,
+                      color: Color(0xff113953),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 100,
+              child: ActiveChats(),
+            ),
+            RecentChats(),
+          ].toList()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: const Color(0xff113953),

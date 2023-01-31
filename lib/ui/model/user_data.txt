@@ -1,0 +1,13 @@
+[{
+    "profileImg": 
+    "id": 1,
+    "
+}]
+
+
+Image? profileImg;
+  String? id;
+  String? userName;
+  String? lastMessage;
+  DateTime? lastMsgTime;
+  double? numOfUnreadMsgs;
