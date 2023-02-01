@@ -6,6 +6,7 @@ class TextFieldInput extends StatelessWidget {
   final bool isPass;
   final TextInputType textInputType;
   final IconData icon;
+  final String? Function(String?) validator;
 
   const TextFieldInput({
     super.key,
@@ -14,14 +15,16 @@ class TextFieldInput extends StatelessWidget {
     required this.isPass,
     required this.textInputType,
     required this.icon,
+    required this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    final InputBorder =
-        OutlineInputBorder(borderSide: Divider.createBorderSide(context));
+    final InputBorder = OutlineInputBorder(
+        borderSide: Divider.createBorderSide(context),
+        borderRadius: BorderRadius.circular(20));
 
-    return TextField(
+    return TextFormField(
       controller: textEditingController,
       decoration: InputDecoration(
           prefixIcon: Icon(icon),
@@ -33,6 +36,7 @@ class TextFieldInput extends StatelessWidget {
           contentPadding: const EdgeInsets.all(8)),
       keyboardType: textInputType,
       obscureText: isPass,
+      validator: validator,
     );
   }
 }

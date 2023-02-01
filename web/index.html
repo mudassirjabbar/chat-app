@@ -31,6 +31,25 @@
 
   <title>chat_app</title>
   <link rel="manifest" href="manifest.json">
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDSQ6ZNSLX0cBtnKd_tVmJ7BFOoMp7sPts",
+      authDomain: "chat-app-d0244.firebaseapp.com",
+      projectId: "chat-app-d0244",
+      storageBucket: "chat-app-d0244.appspot.com",
+      messagingSenderId: "196050837264",
+      appId: "1:196050837264:web:dc82d64c984638b27ecf95"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
 
   <script>
     // The value below is injected by flutter build, do not touch.
