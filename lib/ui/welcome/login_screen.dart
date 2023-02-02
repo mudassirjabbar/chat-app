@@ -13,8 +13,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  bool emailValidator = false;
+  bool passwordValidator = false;
 
   @override
   void dispose() {
@@ -65,37 +68,60 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                TextFieldInput(
-                    textEditingController: _email,
-                    hintText: 'Enter your email',
-                    isPass: false,
-                    textInputType: TextInputType.text,
-                    icon: Icons.email_outlined,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    }),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextFieldInput(
-                    textEditingController: _password,
-                    hintText: 'Enter Password',
-                    isPass: true,
-                    textInputType: TextInputType.number,
-                    icon: Icons.lock_outline,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    }),
+                Form(
+                    autovalidateMode: AutovalidateMode.always,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFieldInput(
+                            textEditingController: _email,
+                            hintText: 'Enter your email',
+                            isPass: false,
+                            textInputType: TextInputType.text,
+                            icon: Icons.email_outlined,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Email is required';
+                              } else {
+                                if (!RegExp(
+                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                    .hasMatch(value)) {
+                                  return 'Enter valid email address';
+                                }
+                                emailValidator = true;
+
+                                return null;
+                              }
+                            }),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        TextFieldInput(
+                            textEditingController: _password,
+                            hintText: 'Enter Password',
+                            isPass: true,
+                            textInputType: TextInputType.number,
+                            icon: Icons.lock_outline,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Enter your password';
+                                // } else {
+                                //   if (!RegExp(
+                                //           r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+                                //       .hasMatch(value)) {
+                                //     return 'Please enter password that should at least contains 8 characters including one upper & lower case, one digit and one special character';
+                                //   }
+                              }
+                              passwordValidator = true;
+
+                              return null;
+                            }),
+                      ],
+                    )),
                 const SizedBox(height: 50),
                 CustomButton(
                   onTap: () {
-                    if (_email.text.isNotEmpty && _password.text.isNotEmpty) {
+                    if (_formKey.currentState!.validate()) {
                       FirebaseAuth.instance
                           .signInWithEmailAndPassword(
                               email: _email.text, password: _password.text)
@@ -113,12 +139,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       });
                     } else {
-                      const snackBar = SnackBar(
+                      final snackBar = SnackBar(
                         backgroundColor: Colors.yellow,
-                        content: Text(
-                          'One of Password or email field is empty',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        content: emailValidator == true &&
+                                passwordValidator == false
+                            ? const Text(
+                                'Password field is empty',
+                                style: TextStyle(color: Colors.black),
+                              )
+                            : emailValidator == false &&
+                                    passwordValidator == true
+                                ? const Text(
+                                    'email field is empty',
+                                    style: TextStyle(color: Colors.black),
+                                  )
+                                : emailValidator == false &&
+                                        passwordValidator == false
+                                    ? const Text(
+                                        'Both fields are empty',
+                                        style: TextStyle(color: Colors.black),
+                                      )
+                                    : const Text(''),
                         duration: Duration(seconds: 5),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
