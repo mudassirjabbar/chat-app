@@ -69,101 +69,60 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 20,
                 ),
                 Form(
-                    autovalidateMode: AutovalidateMode.always,
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFieldInput(
-                            textEditingController: _email,
-                            hintText: 'Enter your email',
-                            isPass: false,
-                            textInputType: TextInputType.text,
-                            icon: Icons.email_outlined,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Email is required';
-                              } else {
-                                if (!RegExp(
-                                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                                    .hasMatch(value)) {
-                                  return 'Enter valid email address';
-                                }
-                                emailValidator = true;
-
-                                return null;
+                  autovalidateMode: AutovalidateMode.always,
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFieldInput(
+                          textEditingController: _email,
+                          hintText: 'Enter your email',
+                          isPass: false,
+                          textInputType: TextInputType.text,
+                          icon: Icons.email_outlined,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Email is required';
+                            } else {
+                              if (!RegExp(
+                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                  .hasMatch(value)) {
+                                return 'Enter valid email address';
                               }
-                            }),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        TextFieldInput(
-                            textEditingController: _password,
-                            hintText: 'Enter Password',
-                            isPass: true,
-                            textInputType: TextInputType.number,
-                            icon: Icons.lock_outline,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Enter your password';
-                                // } else {
-                                //   if (!RegExp(
-                                //           r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
-                                //       .hasMatch(value)) {
-                                //     return 'Please enter password that should at least contains 8 characters including one upper & lower case, one digit and one special character';
-                                //   }
-                              }
-                              passwordValidator = true;
+                              emailValidator = true;
 
                               return null;
-                            }),
-                      ],
-                    )),
+                            }
+                          }),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      TextFieldInput(
+                          textEditingController: _password,
+                          hintText: 'Enter Password',
+                          isPass: true,
+                          textInputType: TextInputType.number,
+                          icon: Icons.lock_outline,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter your password';
+                              // } else {
+                              //   if (!RegExp(
+                              //           r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+                              //       .hasMatch(value)) {
+                              //     return 'Please enter password that should at least contains 8 characters including one upper & lower case, one digit and one special character';
+                              //   }
+                            }
+                            passwordValidator = true;
+
+                            return null;
+                          }),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 50),
                 CustomButton(
                   onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: _email.text, password: _password.text)
-                          .then((value) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
-                        );
-                      }).onError((error, stackTrace) {
-                        final snackBar = SnackBar(
-                          content: Text('Error is ${error.toString()}'),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      });
-                    } else {
-                      final snackBar = SnackBar(
-                        backgroundColor: Colors.yellow,
-                        content: emailValidator == true &&
-                                passwordValidator == false
-                            ? const Text(
-                                'Password field is empty',
-                                style: TextStyle(color: Colors.black),
-                              )
-                            : emailValidator == false &&
-                                    passwordValidator == true
-                                ? const Text(
-                                    'email field is empty',
-                                    style: TextStyle(color: Colors.black),
-                                  )
-                                : emailValidator == false &&
-                                        passwordValidator == false
-                                    ? const Text(
-                                        'Both fields are empty',
-                                        style: TextStyle(color: Colors.black),
-                                      )
-                                    : const Text(''),
-                        duration: Duration(seconds: 5),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
+                    onSave();
                   },
                   text: 'Login',
                 ),
@@ -199,5 +158,97 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  SnackBar errorMsg(error) {
+    return SnackBar(
+      content: Text('$error'),
+    );
+  }
+
+  onSave() async {
+    final isValid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+
+    if (isValid) {
+      _formKey.currentState?.save();
+      try {
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: _email.text, password: _password.text)
+            .then((value) {
+          if (value.user!.uid.isNotEmpty) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
+          }
+        });
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'network-request-failed') {
+          final snackBar = errorMsg('No internet connection');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        //
+        else if (e.code == "wrong-password") {
+          final snackBar = errorMsg('Enter correct password');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        //
+        else if (e.code == 'user-not-found') {
+          final snackBar = errorMsg('Email not found');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        //
+        else if (e.code == 'too-many-requests') {
+          final snackBar = errorMsg('Too many attemps, please try again later');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        //
+        else if (e.code == 'too-many-requests') {
+          final snackBar = errorMsg('Too many attemps, please try again later');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        //
+        else if (e.code == 'unknown') {
+          final snackBar = errorMsg('Email field is required');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        //
+        else if (e.code == 'unknown') {
+          final snackBar = errorMsg('Password field is required');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        //
+        else {
+          final snackBar = errorMsg('Error is ${e.code}');
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      }
+    } else {
+      final snackBar = SnackBar(
+        backgroundColor: Colors.yellow,
+        content: emailValidator == true && passwordValidator == false
+            ? const Text(
+                'Password field is empty',
+                style: TextStyle(color: Colors.black),
+              )
+            : emailValidator == false && passwordValidator == true
+                ? const Text(
+                    'email field is empty',
+                    style: TextStyle(color: Colors.black),
+                  )
+                : emailValidator == false && passwordValidator == false
+                    ? const Text(
+                        'Both fields are empty',
+                        style: TextStyle(color: Colors.black),
+                      )
+                    : const Text(''),
+        duration: const Duration(seconds: 5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 }
