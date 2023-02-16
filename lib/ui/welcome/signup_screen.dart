@@ -7,6 +7,7 @@ import 'package:chat_app/ui/welcome/widgets/signup_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -21,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
 
   @override
   void dispose() {
@@ -29,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _email.dispose();
     _password.dispose();
     _confirmPassword.dispose();
+    _ageController.dispose();
   }
 
   @override
@@ -47,47 +50,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 SignUpForm(
-                    formKey: _formKey,
-                    userName: _userName,
-                    email: _email,
-                    password: _password,
-                    confirmPassword: _confirmPassword),
+                  formKey: _formKey,
+                  userName: _userName,
+                  email: _email,
+                  password: _password,
+                  confirmPassword: _confirmPassword,
+                  ageController: _ageController,
+                ),
                 const SizedBox(height: 50),
                 CustomButton(
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: _email.text, password: _password.text)
-                          .then((value) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ));
-                      }).onError((error, stackTrace) {
-                        final snackBar = SnackBar(
-                          backgroundColor: Colors.yellow,
-                          content: Text(
-                            'The error is ${error.toString()}',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                          duration: const Duration(seconds: 5),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      });
-                    } else {
-                      const snackBar = SnackBar(
-                        backgroundColor: Colors.yellow,
-                        content: Text(
-                          'Make sure all fields are entered',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        duration: Duration(seconds: 5),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }
-                  },
+                  onTap: signUp,
                   text: 'Sign Up',
                 ),
                 const SizedBox(height: 10),
@@ -122,5 +94,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  Future signUp() async {
+    // Create User
+    if (_formKey.currentState!.validate()) {
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _email.text, password: _password.text)
+          .then((value) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ));
+      }).onError((error, stackTrace) {
+        final snackBar = SnackBar(
+          backgroundColor: Colors.yellow,
+          content: Text(
+            'The error is ${error.toString()}',
+            style: const TextStyle(color: Colors.black),
+          ),
+          duration: const Duration(seconds: 5),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      });
+    } else {
+      const snackBar = SnackBar(
+        backgroundColor: Colors.yellow,
+        content: Text(
+          'Make sure all fields are entered',
+          style: TextStyle(color: Colors.black),
+        ),
+        duration: Duration(seconds: 5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    //add user details
+    addUserDetails(_userName.text.toString(),
+        int.parse(_ageController.text.toString()), _email.text.toString());
+  }
+
+  Future addUserDetails(String userName, int age, String email) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'user name': userName,
+      'age': age,
+      'email': email,
+    });
   }
 }

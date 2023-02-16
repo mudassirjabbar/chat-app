@@ -9,8 +9,10 @@ class SignUpForm extends StatelessWidget {
     required TextEditingController email,
     required TextEditingController password,
     required TextEditingController confirmPassword,
+    required TextEditingController ageController,
   })  : _formKey = formKey,
         _userName = userName,
+        _ageController = ageController,
         _email = email,
         _password = password,
         _confirmPassword = confirmPassword;
@@ -20,6 +22,7 @@ class SignUpForm extends StatelessWidget {
   final TextEditingController _email;
   final TextEditingController _password;
   final TextEditingController _confirmPassword;
+  final TextEditingController _ageController;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +44,22 @@ class SignUpForm extends StatelessWidget {
                     if (!RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
                       return 'Enter correct user name';
                     }
+                  }
+
+                  return null;
+                }),
+            const SizedBox(
+              height: 15,
+            ),
+            TextFieldInput(
+                textEditingController: _ageController,
+                hintText: 'Enter your age',
+                isPass: false,
+                textInputType: TextInputType.number,
+                icon: Icons.ad_units,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'age is required';
                   }
 
                   return null;

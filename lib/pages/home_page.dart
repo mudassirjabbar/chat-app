@@ -67,11 +67,11 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 100,
               child: ActiveChats(),
             ),
-            RecentChats(),
+            const RecentChats(),
           ].toList()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},

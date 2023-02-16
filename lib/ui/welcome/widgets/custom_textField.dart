@@ -20,7 +20,7 @@ class TextFieldInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final InputBorder = OutlineInputBorder(
+    final inputBorder = OutlineInputBorder(
         borderSide: Divider.createBorderSide(context),
         borderRadius: BorderRadius.circular(20));
 
@@ -29,9 +29,9 @@ class TextFieldInput extends StatelessWidget {
       decoration: InputDecoration(
           prefixIcon: Icon(icon),
           hintText: hintText,
-          border: InputBorder,
-          focusedBorder: InputBorder,
-          enabledBorder: InputBorder,
+          border: inputBorder,
+          focusedBorder: inputBorder,
+          enabledBorder: inputBorder,
           filled: true,
           contentPadding: const EdgeInsets.all(8)),
       keyboardType: textInputType,

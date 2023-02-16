@@ -178,6 +178,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 email: _email.text, password: _password.text)
             .then((value) {
           if (value.user!.uid.isNotEmpty) {
+            print(value.user!.displayName);
+            print(value.user!.email);
+            print(value.user!.refreshToken);
+            print(value.user!.photoURL);
+            print(value.user!.emailVerified);
+            print(value.user!.providerData);
             Navigator.push(
               context,
               MaterialPageRoute(
