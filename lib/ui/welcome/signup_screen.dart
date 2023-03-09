@@ -1,11 +1,9 @@
 import 'package:chat_app/pages/home_page.dart';
 import 'package:chat_app/ui/welcome/login_screen.dart';
 import 'package:chat_app/ui/welcome/widgets/custom_buton.dart';
-import 'package:chat_app/ui/welcome/widgets/custom_textField.dart';
 import 'package:chat_app/ui/welcome/widgets/rich_text.dart';
 import 'package:chat_app/ui/welcome/widgets/signup_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -59,7 +57,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 50),
                 CustomButton(
-                  onTap: signUp,
+                  onTap: () {
+                    signUp();
+                  },
                   text: 'Sign Up',
                 ),
                 const SizedBox(height: 10),
@@ -101,13 +101,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (_formKey.currentState!.validate()) {
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: _email.text, password: _password.text)
-          .then((value) {
-        Navigator.push(
+        email: _email.text,
+        password: _password.text,
+      )
+          .then((value) async {
+        //add user details
+        await addUserDetails(
+          _userName.text.trim(),
+          int.parse(_ageController.text.toString()),
+          _email.text.toString(),
+          'Hello, How are you?',
+          'assets/images.png',
+          1,
+          DateTime.now(),
+        ).then((value) => Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => HomePage(),
-            ));
+            )));
       }).onError((error, stackTrace) {
         final snackBar = SnackBar(
           backgroundColor: Colors.yellow,
@@ -130,16 +141,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-    //add user details
-    addUserDetails(_userName.text.toString(),
-        int.parse(_ageController.text.toString()), _email.text.toString());
   }
 
-  Future addUserDetails(String userName, int age, String email) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'user name': userName,
+  // classname objectname = classname();
+  // objetname.name = -sandjan
+  // o .age snisan
+  // nasjdnkj.nndjk asddn
+
+  Future addUserDetails(
+    String userName,
+    int age,
+    String email,
+    String lastMsg,
+    String profileImg,
+    int numOfUnreadMsgs,
+    DateTime lastMsgTime,
+
+    // String about,
+    // DateTime createdAt,
+    // String id,
+    // String image,
+    // bool isOnline,
+    // String lastActive,
+    // String name,
+    // String pushToken,
+  ) async {
+    await FirebaseFirestore.instance.collection('users').doc(email).set({
+      'user_name': userName,
       'age': age,
       'email': email,
+      'lastMsg': lastMsg,
+      'profile': profileImg,
+      'numOfUnreadMsgs': numOfUnreadMsgs,
+      'lastMsgTime': lastMsgTime,
+      'userChat': false,
     });
   }
 }

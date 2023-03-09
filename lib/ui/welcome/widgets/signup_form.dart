@@ -32,6 +32,7 @@ class SignUpForm extends StatelessWidget {
         child: Column(
           children: [
             TextFieldInput(
+                onChange: (p0) {},
                 textEditingController: _userName,
                 hintText: 'Enter your user name',
                 isPass: false,
@@ -52,6 +53,7 @@ class SignUpForm extends StatelessWidget {
               height: 15,
             ),
             TextFieldInput(
+                onChange: (p0) {},
                 textEditingController: _ageController,
                 hintText: 'Enter your age',
                 isPass: false,
@@ -68,6 +70,7 @@ class SignUpForm extends StatelessWidget {
               height: 15,
             ),
             TextFieldInput(
+                onChange: (p0) {},
                 textEditingController: _email,
                 hintText: 'Enter your email',
                 isPass: false,
@@ -90,6 +93,7 @@ class SignUpForm extends StatelessWidget {
               height: 15,
             ),
             TextFieldInput(
+                onChange: (p0) {},
                 textEditingController: _password,
                 hintText: 'Enter Password',
                 isPass: true,
@@ -111,6 +115,7 @@ class SignUpForm extends StatelessWidget {
               height: 15,
             ),
             TextFieldInput(
+                onChange: (p0) {},
                 textEditingController: _confirmPassword,
                 hintText: 'confirm password',
                 isPass: true,

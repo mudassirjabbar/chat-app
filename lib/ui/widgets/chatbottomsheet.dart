@@ -35,9 +35,11 @@ class ChatBottomSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: Container(
-              width: 300,
+              width: 200,
               alignment: Alignment.centerRight,
               child: TextFormField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
                 decoration: const InputDecoration(
                   hintText: 'Type something..',
                   border: InputBorder.none,

@@ -4,6 +4,7 @@ import 'package:chat_app/ui/welcome/widgets/custom_buton.dart';
 import 'package:chat_app/ui/welcome/widgets/custom_textField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -74,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       TextFieldInput(
+                          onChange: (p0) {},
                           textEditingController: _email,
                           hintText: 'Enter your email',
                           isPass: false,
@@ -97,6 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 15,
                       ),
                       TextFieldInput(
+                          onChange: (p0) {},
                           textEditingController: _password,
                           hintText: 'Enter Password',
                           isPass: true,
@@ -121,7 +124,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 50),
                 CustomButton(
-                  onTap: () {
+                  onTap: () async {
+                    final SharedPreferences sharedPreferences =
+                        await SharedPreferences.getInstance();
+                    sharedPreferences.setString('email', _email.text);
+
                     onSave();
                   },
                   text: 'Login',
@@ -178,12 +185,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 email: _email.text, password: _password.text)
             .then((value) {
           if (value.user!.uid.isNotEmpty) {
-            print(value.user!.displayName);
-            print(value.user!.email);
-            print(value.user!.refreshToken);
-            print(value.user!.photoURL);
-            print(value.user!.emailVerified);
-            print(value.user!.providerData);
             Navigator.push(
               context,
               MaterialPageRoute(

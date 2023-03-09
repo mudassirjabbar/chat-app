@@ -2,13 +2,23 @@ import 'package:chat_app/pages/active_chats.dart';
 import 'package:chat_app/pages/recent_chats.dart';
 import 'package:flutter/material.dart';
 
+import '../Drawer/drawer_list.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(),
+      drawer: Drawer(
+        child: Container(
+          child: Column(
+            children: [
+              DrawerList(),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         actions: const [
           Padding(
@@ -49,7 +59,7 @@ class HomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      width: 300,
+                      width: 270,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: TextFormField(
